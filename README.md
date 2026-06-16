@@ -118,16 +118,16 @@ source ./setup_cuda_env.sh
 
 **Usage:**
 ```bash
+conda activate MoneyPrinterTurbo
 # Web Interface (Recommended)
 ./webui.sh            
-
-## Optional: Customize speech speed when using chatter box
-export CHATTERBOX_CFG_WEIGHT=0.1  # Very slow
-export CHATTERBOX_CFG_WEIGHT=0.2  # Slow (default)
-export CHATTERBOX_CFG_WEIGHT=0.3  # Normal speed
 ```
 
 The web interface opens at `http://localhost:8501`
+
+## Execution
+
+
 
 ## 🔧 Troubleshooting
 

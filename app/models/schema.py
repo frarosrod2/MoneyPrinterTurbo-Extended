@@ -127,7 +127,7 @@ class VideoParams(BaseModel):
     image_similarity_threshold: Optional[float] = 0.7
     image_similarity_model: Optional[str] = "clip-vit-base-patch32"
     
-    n_threads: Optional[int] = 2
+    n_threads: Optional[int] = 6
     paragraph_number: Optional[int] = 1
 
 

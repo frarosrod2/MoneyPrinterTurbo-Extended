@@ -1211,6 +1211,9 @@ def azure_tts_v1(
                         elif chunk["type"] == "WordBoundary":
                             sub_maker.subs.append(chunk["text"])
                             sub_maker.offset.append((chunk["offset"], chunk["offset"] + chunk["duration"]))
+                        elif chunk["type"] == "SentenceBoundary":
+                            sub_maker.subs.append(chunk["text"])
+                            sub_maker.offset.append((chunk["offset"], chunk["offset"] + chunk["duration"]))
                 return sub_maker
 
             sub_maker = asyncio.run(_do())
