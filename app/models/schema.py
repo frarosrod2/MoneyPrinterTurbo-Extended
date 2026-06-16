@@ -97,7 +97,7 @@ class VideoParams(BaseModel):
     bgm_volume: Optional[float] = 0.2
 
     subtitle_enabled: Optional[bool] = True
-    subtitle_position: Optional[str] = "bottom"  # top, bottom, center
+    subtitle_position: Optional[str] = "center"  # top, bottom, center
     custom_position: float = 70.0
     font_name: Optional[str] = "STHeitiMedium.ttc"
     text_fore_color: Optional[str] = "#FFFFFF"
@@ -128,7 +128,7 @@ class VideoParams(BaseModel):
     image_similarity_model: Optional[str] = "clip-vit-base-patch32"
     
     n_threads: Optional[int] = 6
-    paragraph_number: Optional[int] = 1
+    paragraph_number: Optional[int] = 4
 
 
 class SubtitleRequest(BaseModel):
@@ -180,7 +180,7 @@ class VideoScriptParams:
 
     video_subject: Optional[str] = "春天的花海"
     video_language: Optional[str] = ""
-    paragraph_number: Optional[int] = 1
+    paragraph_number: Optional[int] = 4
 
 
 class VideoTermsParams:
