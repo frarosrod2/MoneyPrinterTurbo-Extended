@@ -116,6 +116,44 @@ cd chatterbox && pip install -e . && cd ..
 source ./setup_cuda_env.sh    
 ```
 
+### Setting Up Ollama (Free Local LLM)
+
+This fork can use [Ollama](https://ollama.com) to generate scripts and keywords entirely offline and for free, avoiding any API costs or rate limits.
+
+**1. Install Ollama**
+
+Download the installer for your OS from [ollama.com/download](https://ollama.com/download) and run it.
+
+**2. Pull a model**
+
+```bash
+ollama pull qwen2.5:7b
+```
+
+Smaller alternatives (`qwen2.5:3b`, `llama3.2:3b`) work well on machines with limited RAM/VRAM.
+
+**3. Verify it's running**
+
+Ollama runs as a background service after installation. Confirm with:
+
+```bash
+ollama list
+```
+
+**4. Configure `config.toml`**
+
+```toml
+llm_provider = "ollama"
+ollama_base_url = "http://127.0.0.1:11434/v1"
+ollama_model_name = "qwen2.5:7b"
+```
+
+> Note: if you encounter `FileNotFoundError: [Errno 2] No such file or directory` when generating scripts on Windows, this is usually caused by a stale `SSL_CERT_FILE` environment variable set by conda. Fix it with:
+> ```bash
+> export SSL_CERT_FILE=$(python -c "import certifi; print(certifi.where())")
+> ```
+> To make this permanent, append it to `$CONDA_PREFIX/etc/conda/activate.d/ssl_fix.sh`.
+
 **Usage:**
 ```bash
 conda activate MoneyPrinterTurbo
@@ -166,7 +204,14 @@ If you encounter CUDA library issues, the startup scripts automatically:
 1. Add cuDNN library paths to `LD_LIBRARY_PATH` (Linux) 
 2. Set optimal CUDA memory allocation settings
 
+**Edge TTS / subtitle sync issues (`sub_maker is None`):**
+- **Cause**: Microsoft's Edge TTS API recently stopped emitting `WordBoundary` events for some voices, only `SentenceBoundary`, breaking word-level subtitle timing.
+- **Workaround**: in `app/services/voice.py`, inside `azure_tts_v1`, add handling for `SentenceBoundary` alongside `WordBoundary` so `sub_maker` doesn't stay empty. For full word-by-word highlighting, switch to `subtitle_provider = "whisper"` in `config.toml` instead, since Whisper transcribes the generated audio independently of Edge TTS's boundary events.
+
 </details>
+
+
+
 
 ## Contributions and Support 
 
