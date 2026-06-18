@@ -158,7 +158,8 @@ ollama_model_name = "qwen2.5:7b"
 ```bash
 conda activate MoneyPrinterTurbo
 # Web Interface (Recommended)
-./webui.sh            
+./webui.sh 
+# Or ./api.sh       
 ```
 
 The web interface opens at `http://localhost:8501`

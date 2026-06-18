@@ -77,7 +77,7 @@ class VideoParams(BaseModel):
     video_script: str = ""  # Script used to generate the video
     video_terms: Optional[str | list] = None  # Keywords used to generate the video
     video_aspect: Optional[VideoAspect] = VideoAspect.portrait.value
-    video_concat_mode: Optional[VideoConcatMode] = VideoConcatMode.random.value
+    video_concat_mode: Optional[VideoConcatMode] = VideoConcatMode.semantic.value
     video_transition_mode: Optional[VideoTransitionMode] = None
     video_clip_duration: Optional[int] = 5
     video_count: Optional[int] = 1
@@ -127,8 +127,8 @@ class VideoParams(BaseModel):
     image_similarity_threshold: Optional[float] = 0.7
     image_similarity_model: Optional[str] = "clip-vit-base-patch32"
     
-    n_threads: Optional[int] = 6
-    paragraph_number: Optional[int] = 4
+    n_threads: Optional[int] = 8
+    paragraph_number: Optional[int] = 2
 
 
 class SubtitleRequest(BaseModel):
@@ -180,7 +180,7 @@ class VideoScriptParams:
 
     video_subject: Optional[str] = "春天的花海"
     video_language: Optional[str] = ""
-    paragraph_number: Optional[int] = 4
+    paragraph_number: Optional[int] = 2
 
 
 class VideoTermsParams:

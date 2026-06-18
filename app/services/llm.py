@@ -1,15 +1,14 @@
 import json
 import logging
 import re
-import requests
 from typing import List
 
 import g4f
+import requests
+from app.config import config
 from loguru import logger
 from openai import AzureOpenAI, OpenAI
 from openai.types.chat import ChatCompletion
-
-from app.config import config
 
 _max_retries = 5
 
@@ -141,7 +140,8 @@ def _generate_response(prompt: str) -> str:
 
             if llm_provider == "qwen":
                 import dashscope
-                from dashscope.api_entities.dashscope_response import GenerationResponse
+                from dashscope.api_entities.dashscope_response import \
+                    GenerationResponse
 
                 dashscope.api_key = api_key
                 response = dashscope.Generation.call(
@@ -378,6 +378,10 @@ Generate {amount} search terms for stock videos, depending on the subject of a v
 3. you must only return the json-array of strings. you must not return anything else. you must not return the script.
 4. the search terms must be related to the subject of the video.
 5. reply with english search terms only.
+6. use generic and visual terms that can be found on stock footage sites like Pexels or Pixabay.
+7. avoid proper nouns, person names, brand names, or specific historical events.
+8. focus on visual concepts, actions, objects, and environments (e.g. "vintage computer" instead of "Gary Thuerk", "crowd protest" instead of "ARPANET").
+9. prefer timeless visual concepts over specific moments in history.
 
 ## Output Example:
 ["search term 1", "search term 2", "search term 3","search term 4","search term 5"]

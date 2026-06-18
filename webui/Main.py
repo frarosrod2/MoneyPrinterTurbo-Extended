@@ -2,9 +2,9 @@ import os
 import platform
 import sys
 from uuid import uuid4
+
 import streamlit as st
 from loguru import logger
-
 
 # Add the root directory of the project to the system path to allow importing modules from the project
 root_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
@@ -15,15 +15,11 @@ if root_dir not in sys.path:
     print("")
 
 from app.config import config
-from app.models.schema import (
-    MaterialInfo,
-    VideoAspect,
-    VideoConcatMode,
-    VideoParams,
-    VideoTransitionMode,
-)
-from app.services import llm, voice
+from app.models.schema import (MaterialInfo, VideoAspect, VideoConcatMode,
+                               VideoParams, VideoTransitionMode)
+from app.services import llm
 from app.services import task as tm
+from app.services import voice
 from app.utils import utils
 
 st.set_page_config(
@@ -696,9 +692,9 @@ with middle_panel:
                 
                 try:
                     # Test direct imports of required dependencies
-                    from transformers import CLIPProcessor, CLIPModel
-                    from PIL import Image
                     import torch
+                    from PIL import Image
+                    from transformers import CLIPModel, CLIPProcessor
                     image_sim_available = True
                     image_sim_info = {"available": True, "dependencies": []}
                 except ImportError as e:
@@ -706,7 +702,7 @@ with middle_panel:
                     # Try to determine which specific dependency is missing
                     missing_deps = []
                     try:
-                        from transformers import CLIPProcessor, CLIPModel
+                        from transformers import CLIPModel, CLIPProcessor
                     except ImportError:
                         missing_deps.append("transformers")
                     
@@ -964,6 +960,7 @@ with middle_panel:
             
             # 显示参考音频文件夹信息
             import os
+
             from app.utils import utils
             reference_audio_dir = os.path.join(utils.root_dir(), "reference_audio")
             
@@ -1131,7 +1128,7 @@ with right_panel:
         ]
         selected_index = st.selectbox(
             tr("Position"),
-            index=2,
+            index=1,
             options=range(len(subtitle_positions)),
             format_func=lambda x: subtitle_positions[x][0],
         )
