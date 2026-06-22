@@ -292,7 +292,7 @@ def _generate_response(prompt: str) -> str:
 
 
 def generate_script(
-    video_subject: str, language: str = "", paragraph_number: int = 2
+    video_subject: str, language: str = "", paragraph_number: int = 4
 ) -> str:
     prompt = f"""
     # Role: Video Script Writer for Short Historical Videos
