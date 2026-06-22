@@ -295,25 +295,25 @@ def generate_script(
     video_subject: str, language: str = "", paragraph_number: int = 2
 ) -> str:
     prompt = f"""
-# Role: Video Script Generator
+    # Role: Video Script Writer for Short Historical Videos
 
-## Goals:
-Generate a script for a video, depending on the subject of the video.
+    ## Style:
+    - Tone: engaging, dramatic, conversational — like a historian telling a story at a bar, not reading a textbook.
+    - Hook: the very first sentence must grab attention immediately. Use a striking fact, a paradox, or a provocative question.
+    - Pacing: short, punchy sentences. Vary rhythm. Build tension where the story allows it.
+    - Language: always write in Spanish, regardless of how the subject is phrased.
 
-## Constrains:
-1. the script is to be returned as a string with the specified number of paragraphs.
-2. do not under any circumstance reference this prompt in your response.
-3. get straight to the point, don't start with unnecessary things like, "welcome to this video".
-4. you must not include any type of markdown or formatting in the script, never use a title.
-5. only return the raw content of the script.
-6. do not include "voiceover", "narrator" or similar indicators of what should be spoken at the beginning of each paragraph or line.
-7. you must not mention the prompt, or anything about the script itself. also, never talk about the amount of paragraphs or lines. just write the script.
-8. respond in the same language as the video subject.
+    ## Rules:
+    1. Return exactly {paragraph_number} paragraphs as plain text.
+    2. No markdown, no titles, no formatting of any kind.
+    3. No introductory phrases like "welcome", "today we'll talk about", "in this video".
+    4. No "voiceover", "narrator", or any script indicators.
+    5. Never reference this prompt, the script itself, or the number of paragraphs.
+    6. Write only the narration content, nothing else.
 
-# Initialization:
-- video subject: {video_subject}
-- number of paragraphs: {paragraph_number}
-""".strip()
+    ## Subject:
+    {video_subject}
+    """.strip()
     if language:
         prompt += f"\n- language: {language}"
 
@@ -367,34 +367,37 @@ Generate a script for a video, depending on the subject of the video.
 
 def generate_terms(video_subject: str, video_script: str, amount: int = 5) -> List[str]:
     prompt = f"""
-# Role: Video Search Terms Generator
+    # Role: Video Search Terms Generator
 
-## Goals:
-Generate {amount} search terms for stock videos, depending on the subject of a video.
+    ## Goals:
+    Generate {amount} search terms for stock footage, based on the video subject and script provided.
 
-## Constrains:
-1. the search terms are to be returned as a json-array of strings.
-2. each search term should consist of 1-3 words, always add the main subject of the video.
-3. you must only return the json-array of strings. you must not return anything else. you must not return the script.
-4. the search terms must be related to the subject of the video.
-5. reply with english search terms only.
-6. use generic and visual terms that can be found on stock footage sites like Pexels or Pixabay.
-7. avoid proper nouns, person names, brand names, or specific historical events.
-8. focus on visual concepts, actions, objects, and environments (e.g. "vintage computer" instead of "Gary Thuerk", "crowd protest" instead of "ARPANET").
-9. prefer timeless visual concepts over specific moments in history.
+    ## Rules:
+    1. Return only a JSON array of strings. No explanation, no extra text.
+    2. Each search term must be 1-3 words in English.
+    3. Always include the geographic location or civilization if the video is set in a specific place or era (e.g. "ancient China", "Roman empire", "medieval Egypt"). This is mandatory.
+    4. Mix specific and general terms: some should anchor the setting, others should describe visual scenes from the script.
+    5. Avoid person names, brand names, and company names.
+    6. Avoid abstract concepts that won't return useful footage (e.g. "betrayal", "justice", "power").
+    7. Prefer visually concrete terms: places, objects, actions, environments, time periods.
+    8. All terms must be in English.
 
-## Output Example:
-["search term 1", "search term 2", "search term 3","search term 4","search term 5"]
+    ## Good examples for a video about ancient China:
+    ["ancient China", "Chinese dynasty", "silk road", "chinese temple", "ancient warriors", "imperial palace"]
 
-## Context:
-### Video Subject
-{video_subject}
+    ## Bad examples (too generic, no location anchor):
+    ["old city", "warriors", "ancient ruins", "historic building", "traditional culture"]
 
-### Video Script
-{video_script}
+    ## Output format:
+    ["term 1", "term 2", "term 3", "term 4", "term 5"]
 
-Please note that you must use English for generating video search terms; Chinese is not accepted.
-""".strip()
+    ## Context:
+    ### Video Subject
+    {video_subject}
+
+    ### Video Script
+    {video_script}
+    """.strip()
 
     logger.info(f"subject: {video_subject}")
 
