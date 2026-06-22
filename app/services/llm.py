@@ -310,7 +310,8 @@ def generate_script(
     4. No "voiceover", "narrator", or any script indicators.
     5. Never reference this prompt, the script itself, or the number of paragraphs.
     6. Write only the narration content, nothing else.
-
+    7. **CRITICAL:** Keep all proper nouns (names of people, banks, companies, battles, places, and institutions) in their original language. DO NOT translate them into Spanish (e.g., keep "Lehman Brothers", "Barings Bank", "George Washington", "Nick Leeson" exactly as they are).
+    
     ## Subject:
     {video_subject}
     """.strip()
