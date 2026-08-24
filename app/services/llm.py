@@ -13,7 +13,7 @@ from openai.types.chat import ChatCompletion
 _max_retries = 5
 
 
-def _generate_response(prompt: str) -> str:
+def _generate_response(prompt: str, temperature: float) -> str:
     try:
         content = ""
         llm_provider = config.app.get("llm_provider", "openai")
@@ -170,7 +170,7 @@ def _generate_response(prompt: str) -> str:
                 genai.configure(api_key=api_key, transport="rest")
 
                 generation_config = {
-                    "temperature": 0.5,
+                    "temperature": temperature,
                     "top_p": 1,
                     "top_k": 1,
                     "max_output_tokens": 2048,
@@ -300,15 +300,22 @@ def generate_script(
     ## Style:
     - Tone: engaging, dramatic, conversational — like a historian telling a story at a bar, not reading a textbook.
     - Hook: the very first sentence must grab attention immediately. Use a striking fact, a paradox, or a provocative question.
-    - Pacing: short, punchy sentences. Vary rhythm. Build tension where the story allows it.
+    - Pacing: short, punchy sentences (max ~12 words each). Vary rhythm. Build tension where the story allows it.
+    - Closing: the final sentence must land a payoff — a twist, an ironic consequence, or a fact that recontextualizes everything said before. Never trail off or summarize; end on impact.
     - Language: always write in Spanish, regardless of how the subject is phrased.
+
+    ## Length (CRITICAL):
+    - Total script length: strictly between 130 and 150 words.
+    - You MUST write EXACTLY {paragraph_number} paragraphs.
+    - EACH paragraph must contain between 32 and 38 words. Do NOT make paragraphs shorter than 30 words.
+    - Count your words before outputting. If a paragraph is under 30 words, expand the details.
 
     ## Rules:
     1. Return exactly {paragraph_number} paragraphs as plain text.
     2. No markdown, no titles, no formatting of any kind.
     3. No introductory phrases like "welcome", "today we'll talk about", "in this video".
     4. No "voiceover", "narrator", or any script indicators.
-    5. Never reference this prompt, the script itself, or the number of paragraphs.
+    5. Never reference this prompt, the script itself, the number of paragraphs, or the word count.
     6. Write only the narration content, nothing else.
     7. **CRITICAL:** Keep all proper nouns (names of people, banks, companies, battles, places, and institutions) in their original language. DO NOT translate them into Spanish (e.g., keep "Lehman Brothers", "Barings Bank", "George Washington", "Nick Leeson" exactly as they are).
     
@@ -342,7 +349,7 @@ def generate_script(
 
     for i in range(_max_retries):
         try:
-            response = _generate_response(prompt=prompt)
+            response = _generate_response(prompt=prompt, temperature=0.5)
             if response:
                 final_script = format_response(response)
             else:
@@ -406,7 +413,7 @@ def generate_terms(video_subject: str, video_script: str, amount: int = 5) -> Li
     response = ""
     for i in range(_max_retries):
         try:
-            response = _generate_response(prompt)
+            response = _generate_response(prompt, temperature=0.2)
             if "Error: " in response:
                 logger.error(f"failed to generate video script: {response}")
                 return response

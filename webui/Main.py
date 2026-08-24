@@ -1265,13 +1265,9 @@ if start_button:
 
     video_files = result.get("videos", [])
     st.success(tr("Video Generation Completed"))
-    try:
-        if video_files:
-            player_cols = st.columns(len(video_files) * 2 + 1)
-            for i, url in enumerate(video_files):
-                player_cols[i * 2 + 1].video(url)
-    except Exception:
-        pass
+    if video_files:
+        for i, url in enumerate(video_files):
+            st.info(f"{i + 1}: {url}")
 
     open_task_folder(task_id)
     logger.info(tr("Video Generation Completed"))

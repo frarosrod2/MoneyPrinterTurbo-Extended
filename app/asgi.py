@@ -64,12 +64,50 @@ app.add_middleware(
 )
 
 task_dir = utils.task_dir()
+
+
+class SafeStaticFiles(StaticFiles):
+    """StaticFiles that never crash on Windows path edge cases.
+
+    Starlette's default lookup_path calls os.path.commonpath(), which raises
+    ValueError("Paths don't have the same drive") when the requested URL
+    resolves to a path on another drive (or contains "\\?\" prefixes),
+    turning a harmless 404 into an unhandled ASGI exception.
+    """
+
+    def lookup_path(self, path: str):
+        for directory in self.all_directories:
+            try:
+                joined_path = os.path.join(directory, path)
+                if self.follow_symlink:
+                    full_path = os.path.abspath(joined_path)
+                else:
+                    full_path = os.path.realpath(joined_path)
+                real_directory = os.path.realpath(directory)
+                try:
+                    common_path = os.path.commonpath([full_path, real_directory])
+                except ValueError:
+                    # Different drives / mixed relative-absolute: treat as 404.
+                    continue
+                if os.path.normcase(common_path) != os.path.normcase(real_directory):
+                    # Don't allow misbehaving clients to break out of the
+                    # static files directory.
+                    continue
+                try:
+                    return full_path, os.stat(full_path)
+                except (FileNotFoundError, NotADirectoryError):
+                    continue
+            except OSError:
+                continue
+        return "", None
+
+
 app.mount(
-    "/tasks", StaticFiles(directory=task_dir, html=True, follow_symlink=True), name=""
+    "/tasks", SafeStaticFiles(directory=task_dir, html=True, follow_symlink=True), name=""
 )
 
 public_dir = utils.public_dir()
-app.mount("/", StaticFiles(directory=public_dir, html=True), name="")
+app.mount("/", SafeStaticFiles(directory=public_dir, html=True), name="")
 
 
 @app.on_event("shutdown")
